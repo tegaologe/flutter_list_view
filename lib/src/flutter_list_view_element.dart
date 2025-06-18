@@ -89,6 +89,8 @@ class FlutterListViewElement extends RenderObjectElement {
             newDelegate.shouldRebuild(oldDelegate))) {
       performRebuild();
       _itemHeights.clear();
+      cachedElements.clear();
+      permanentElements.clear();
     }
     _handleInitIndex(newDelegate, oldDelegate);
     markAsInvalid = true;
