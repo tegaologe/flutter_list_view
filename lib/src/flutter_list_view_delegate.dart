@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 typedef FlutterListViewDelegateOnItemKey = String Function(int index);
 typedef FlutterListViewDelegateOnItemSticky = bool Function(int index);
 typedef FlutterListViewDelegateOnItemHeight = double Function(int index);
+typedef FlutterListViewDelegateOnItemWidth = double Function(int index);
 
 enum FirstItemAlign { start, end }
 
@@ -31,7 +32,9 @@ class FlutterListViewDelegate extends SliverChildDelegate {
       this.onItemSticky,
       this.stickyAtTailer = false,
       this.onItemHeight,
+      this.onItemWidth,
       this.preferItemHeight = 50,
+      this.preferItemWidth = 50,
       this.firstItemAlign = FirstItemAlign.start,
       this.initIndex = 0,
       this.forceToExecuteInitIndex,
@@ -86,8 +89,15 @@ class FlutterListViewDelegate extends SliverChildDelegate {
   /// It can provide better user expierence
   final FlutterListViewDelegateOnItemHeight? onItemHeight;
 
+  /// If you know the item width when scroll direction is horizontal,
+  /// it is better provider the width for better performance
+  final FlutterListViewDelegateOnItemWidth? onItemWidth;
+
   /// If you didn't provide onItemHeight, the preferItemHeight will be apply to item which is not render.
   final double preferItemHeight;
+
+  /// If you didn't provide onItemWidth, the preferItemWidth will be apply to item which is not render when horizontal scrolling.
+  final double preferItemWidth;
 
   /// Called to build children for the sliver.
   ///

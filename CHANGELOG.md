@@ -96,6 +96,9 @@
 ## 1.1.29
 * expose getVisibleIndexData method in controller
 
+## 1.1.30
+* Add preferredWidth option
+
 ## TODO
 * Add horizontal scroll support
 * Add creating items when flutter list view created
