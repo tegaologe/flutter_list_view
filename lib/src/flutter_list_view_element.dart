@@ -374,22 +374,31 @@ class FlutterListViewElement extends RenderObjectElement {
     return false;
   }
 
-  /// [_itemHeights]维护着已经layout的高度, 如果_itemHeights有，则取这个高度
-  /// 没有，则返回preferHeight或后面扩展的接口（要用户提供的Height）
+  /// [_itemHeights]维护已知的item主轴尺寸。若已存在直接返回，
+  /// 否则根据滚动方向返回prefer值或回调结果。
   double getItemHeight(String key, int index) {
     if (_itemHeights.containsKey(key)) {
       return _itemHeights[key]!;
-    } else {
-      if (widget.delegate is FlutterListViewDelegate) {
-        var flutterListDelegate = widget.delegate as FlutterListViewDelegate;
+    }
+
+    if (widget.delegate is FlutterListViewDelegate) {
+      var flutterListDelegate = widget.delegate as FlutterListViewDelegate;
+      var axis = renderObject.constraints.axis;
+      if (axis == Axis.horizontal) {
+        if (flutterListDelegate.onItemWidth != null) {
+          return flutterListDelegate.onItemWidth!(index);
+        }
+        return flutterListDelegate.preferredWidth ??
+            flutterListDelegate.preferItemWidth;
+      } else {
         if (flutterListDelegate.onItemHeight != null) {
           return flutterListDelegate.onItemHeight!(index);
-        } else {
-          return flutterListDelegate.preferItemHeight;
         }
+        return flutterListDelegate.preferItemHeight;
       }
-      return 50.0;
     }
+
+    return 50.0;
   }
 
   bool queryIsStickyItemByIndex(int index) {
@@ -461,7 +470,8 @@ class FlutterListViewElement extends RenderObjectElement {
     if (widget.delegate is FlutterListViewDelegate) {
       var flutterListDelegate = widget.delegate as FlutterListViewDelegate;
       if (flutterListDelegate.onItemKey != null ||
-          flutterListDelegate.onItemHeight != null) {
+          flutterListDelegate.onItemHeight != null ||
+          flutterListDelegate.onItemWidth != null) {
         double height = 0;
         for (var i = 0; i < childCount; i++) {
           height += getItemHeight(getKeyByItemIndex(i), i);
@@ -483,7 +493,13 @@ class FlutterListViewElement extends RenderObjectElement {
       var itemHeight = 50.0;
       if (widget.delegate is FlutterListViewDelegate) {
         var flutterListDelegate = widget.delegate as FlutterListViewDelegate;
-        itemHeight = flutterListDelegate.preferItemHeight;
+        var axis = renderObject.constraints.axis;
+        if (axis == Axis.horizontal) {
+          itemHeight = flutterListDelegate.preferredWidth ??
+              flutterListDelegate.preferItemWidth;
+        } else {
+          itemHeight = flutterListDelegate.preferItemHeight;
+        }
       }
 
       height += ((childCount - calcItemCount) * itemHeight);
