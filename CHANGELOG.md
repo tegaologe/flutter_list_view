@@ -97,7 +97,7 @@
 * expose getVisibleIndexData method in controller
 
 ## 1.1.30
-* Add preferredWidth option
+
 * Document usage for horizontal scrolling
 
 ## TODO
