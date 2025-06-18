@@ -86,8 +86,10 @@ class FlutterListViewElement extends RenderObjectElement {
     final SliverChildDelegate oldDelegate = oldWidget.delegate;
     if (newDelegate != oldDelegate &&
         (newDelegate.runtimeType != oldDelegate.runtimeType ||
-            newDelegate.shouldRebuild(oldDelegate)))
+            newDelegate.shouldRebuild(oldDelegate))) {
       performRebuild();
+      _itemHeights.clear();
+    }
     _handleInitIndex(newDelegate, oldDelegate);
     markAsInvalid = true;
     renderObject.markNeedsLayout();
