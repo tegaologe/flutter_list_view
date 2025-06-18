@@ -65,8 +65,29 @@ FlutterListView(
 ```
 
 If you want better user expierence, preferItemHeight or onItemHeight may set to.
-- preferItemHeight 
-The package don't know the item's height, If you don't set, package alway think the item height is 50 util layout the item. If you know the height, you should set it.  
+- preferItemHeight
+The package don't know the item's height, If you don't set, package alway think the item height is 50 util layout the item. If you know the height, you should set it.
+- preferItemWidth
+The package doesn't know the item's width when scrolling horizontally. If you know it, set preferItemWidth to improve performance.
+- Note: preferItemWidth only hints the layout logic. You still need to provide
+  the actual width of each item in your widget tree.
+- Example for horizontal scrolling:
+```dart
+FlutterListView(
+  scrollDirection: Axis.horizontal,
+  delegate: FlutterListViewDelegate(
+    (context, index) => Container(
+      width: 120,
+      alignment: Alignment.center,
+      margin: const EdgeInsets.symmetric(horizontal: 8),
+      color: Colors.blueAccent,
+      child: Text('Item $index'),
+    ),
+    childCount: 20,
+    preferItemWidth: 120,
+  ),
+)
+```
 - onItemHeight
 like preferItemHeight, the function will used to get height of each item util the item layout.
 ### Keep Position
