@@ -181,13 +181,16 @@ class FlutterListViewElement extends RenderObjectElement {
 
     var scrollOffset = getScrollOffsetByIndex(index);
     var flutterListViewRender = renderObject as FlutterListViewRender;
-    var viewportHeight = flutterListViewRender.currentViewportHeight ?? 0;
+    var viewportExtent = flutterListViewRender.currentViewportExtent ?? 0;
+    var offsetPx = offset.abs() <= 1.0 ? offset * viewportExtent : offset;
 
     if (basedOnBottom) {
       var itemHeight = getItemHeight(getKeyByItemIndex(index), index);
-      scrollOffset = scrollOffset - (viewportHeight - itemHeight - offset);
+
+      scrollOffset = scrollOffset - (viewportExtent - itemHeight - offsetPx);
     } else {
       scrollOffset -= offset;
+      scrollOffset -= offsetPx;
     }
 
     if (scrollOffset < 0) scrollOffset = 0;
@@ -270,12 +273,12 @@ class FlutterListViewElement extends RenderObjectElement {
 
   void pageDown() {
     var flutterListViewRender = renderObject as FlutterListViewRender;
-    var viewportHeight = flutterListViewRender.currentViewportHeight ?? 0;
+    var viewportExtent = flutterListViewRender.currentViewportExtent ?? 0;
     var sdata = getVisibleIndexData();
     int first = sdata[0];
     int last = sdata[1];
     double totalHeight = sdata[2];
-    if (totalHeight <= viewportHeight) {
+    if (totalHeight <= viewportExtent) {
       // perfect alignment
       if (last + 1 < childCount) {
         jumpToIndex(last + 1, 0, false);
@@ -291,12 +294,12 @@ class FlutterListViewElement extends RenderObjectElement {
 
   void pageUp() {
     var flutterListViewRender = renderObject as FlutterListViewRender;
-    var viewportHeight = flutterListViewRender.currentViewportHeight ?? 0;
+    var viewportExtent = flutterListViewRender.currentViewportExtent ?? 0;
     var sdata = getVisibleIndexData();
     int first = sdata[0];
     int last = sdata[1];
     double totalHeight = sdata[2];
-    if (totalHeight <= viewportHeight) {
+    if (totalHeight <= viewportExtent) {
       // perfect alignment
       if (first <= 1) {
         jumpToIndex(0, 0, false);
@@ -536,13 +539,13 @@ class FlutterListViewElement extends RenderObjectElement {
 
   /// 用于找到并构造当前屏的Element
   /// [scrollOffset]为当前scroll的位置
-  void removeOutOfScopeElements(double scrollOffset, double viewportHeight) {
-    double cacheExtent = viewportHeight;
+  void removeOutOfScopeElements(double scrollOffset, double viewportExtent) {
+    double cacheExtent = viewportExtent;
     double startOffset = scrollOffset - cacheExtent;
     if (startOffset < 0) {
       startOffset = 0;
     }
-    double endOffset = scrollOffset + viewportHeight + cacheExtent;
+    double endOffset = scrollOffset + viewportExtent + cacheExtent;
 
     /// Remove unrenderable item from [_renderedElements]
     /// Notice remove left and remove right is good for performance.

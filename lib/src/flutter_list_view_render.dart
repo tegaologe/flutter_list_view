@@ -23,7 +23,7 @@ class FlutterListViewRender extends RenderSliver
   double? lastPainItemHeight;
 
   double? currentScrollOffset;
-  double? currentViewportHeight;
+  double? currentViewportExtent;
 
   /// [_trackedNextStickyElement] is evaluate in performLayout and used it paint
   FlutterListViewRenderData? _trackedNextStickyElement;
@@ -142,7 +142,7 @@ class FlutterListViewRender extends RenderSliver
     //     constraints.scrollOffset + constraints.cacheOrigin;
     final double scrollOffset = constraints.scrollOffset;
     assert(scrollOffset >= 0.0);
-    final double viewportHeight = constraints.viewportMainAxisExtent;
+    final double viewportExtent = constraints.viewportMainAxisExtent;
     // final double remainingExtent = constraints.remainingCacheExtent;
     // assert(remainingExtent >= 0.0);
     // final double targetEndScrollOffset = scrollOffset + remainingExtent;
@@ -164,18 +164,18 @@ class FlutterListViewRender extends RenderSliver
 
       if (jumpIndex != null && jumpIndex < childManager.childCount) {
         if (_handleJump(jumpIndex, jumpOffset, offsetBasedOnBottom,
-            viewportHeight, childConstraints)) {
+            viewportExtent, childConstraints)) {
           return;
         }
       } else {
-        if (_handleKeepPositionInLayout(viewportHeight, childConstraints)) {
+        if (_handleKeepPositionInLayout(viewportExtent, childConstraints)) {
           return;
         }
       }
     }
 
     if (_isAdjustOperation == false) {
-      childManager.removeOutOfScopeElements(scrollOffset, viewportHeight);
+      childManager.removeOutOfScopeElements(scrollOffset, viewportExtent);
     }
 
     /// It the prev element's height not same with prefer's
@@ -237,8 +237,8 @@ class FlutterListViewRender extends RenderSliver
     // 如果记录数为1000, 跳转到每1000条记录时下面会出现空白，并会返弹回去
     // 去掉这个情况，所以加上了这些
     if (_isAdjustOperation) {
-      var maxRemainArea = childManager.totalItemHeight - viewportHeight;
-      if (childManager.totalItemHeight <= viewportHeight &&
+      var maxRemainArea = childManager.totalItemHeight - viewportExtent;
+      if (childManager.totalItemHeight <= viewportExtent &&
           constraints.scrollOffset > 0) {
         geometry = SliverGeometry(
             scrollExtent: _getScrollExtent(),
@@ -324,9 +324,9 @@ class FlutterListViewRender extends RenderSliver
       } else if (childManager.totalItemHeight -
               scrollOffset -
               compensationScroll <
-          viewportHeight) {
+          viewportExtent) {
         compensationScroll =
-            childManager.totalItemHeight - viewportHeight - scrollOffset;
+            childManager.totalItemHeight - viewportExtent - scrollOffset;
         if (scrollOffset + compensationScroll < 0) {
           compensationScroll = 0;
         }
@@ -388,8 +388,8 @@ class FlutterListViewRender extends RenderSliver
             if ((oldPaintedElement.itemKey == newPaintedElement.itemKey) &&
                 oldPaintedElement.prevRenderHeight != null &&
                 newPaintedElement != childManager.stickyElement) {
-              differIncreaseHeight +=
-                  _mainAxisExtent(child.size) - oldPaintedElement.prevRenderHeight!;
+              differIncreaseHeight += _mainAxisExtent(child.size) -
+                  oldPaintedElement.prevRenderHeight!;
               // 位置调整好后，把prevRenderHeight改成新的size, avoid死循环
               newPaintedElement.prevRenderHeight = _mainAxisExtent(child.size);
               if (newPaintedElement.itemKey ==
@@ -420,7 +420,7 @@ class FlutterListViewRender extends RenderSliver
       int jumpIndex,
       double indexShoudBeJumpOffset,
       bool offsetBasedOnBottom,
-      double viewportHeight,
+      double viewportExtent,
       Constraints childConstraints) {
     if (jumpIndex >= 0 && jumpIndex < childManager.childCount) {
       var itemDy = childManager.getScrollOffsetByIndex(jumpIndex);
@@ -439,13 +439,15 @@ class FlutterListViewRender extends RenderSliver
           newHeight: itemHeight,
           needUpdateNextElementOffset: false);
 
-      var scrollDy = itemDy - indexShoudBeJumpOffset;
-      _jumpDistanceFromTop = indexShoudBeJumpOffset;
+      var offsetPx = indexShoudBeJumpOffset.abs() <= 1.0
+          ? indexShoudBeJumpOffset * viewportExtent
+          : indexShoudBeJumpOffset;
+
+      var scrollDy = itemDy - offsetPx;
+      _jumpDistanceFromTop = offsetPx;
       if (offsetBasedOnBottom) {
-        scrollDy =
-            itemDy - (viewportHeight - (indexShoudBeJumpOffset + itemHeight));
-        _jumpDistanceFromTop =
-            viewportHeight - (indexShoudBeJumpOffset + itemHeight);
+        scrollDy = itemDy - (viewportExtent - (offsetPx + itemHeight));
+        _jumpDistanceFromTop = viewportExtent - (offsetPx + itemHeight);
       }
 
       if (scrollDy < 0) scrollDy = 0;
@@ -464,14 +466,14 @@ class FlutterListViewRender extends RenderSliver
   }
 
   bool _handleKeepPositionInLayout(
-      double viewportHeight, Constraints childConstraints) {
+      double viewportExtent, Constraints childConstraints) {
     if (childManager.keepPosition &&
         childManager.keepPositionOffset <= constraints.scrollOffset &&
         firstPainItemInViewport != null &&
         constraints.cacheOrigin <= 0 &&
         // constraints.remainingPaintExtent >=
         //     constraints.viewportMainAxisExtent &&
-        childManager.totalItemHeight > viewportHeight) {
+        childManager.totalItemHeight > viewportExtent) {
       /// keep position when insert before rendered item.
       /// 1. find item by itemKey
       /// 2. cache position of the item
@@ -571,13 +573,13 @@ class FlutterListViewRender extends RenderSliver
   void _determineHeaderStickyElement(BoxConstraints childConstraints) {
     final double scrollOffset = constraints.scrollOffset;
     final double cacheOrigin = constraints.cacheOrigin;
-    final double viewportHeight = constraints.viewportMainAxisExtent;
+    final double viewportExtent = constraints.viewportMainAxisExtent;
     _trackedNextStickyElement = null;
 
     /// The three condition indicate it is already reach header in multiple sliver
     if (cacheOrigin <= 0 &&
-        constraints.remainingPaintExtent >= viewportHeight &&
-        childManager.totalItemHeight > viewportHeight) {
+        constraints.remainingPaintExtent >= viewportExtent &&
+        childManager.totalItemHeight > viewportExtent) {
       FlutterListViewRenderData? firstElementInViewport;
 
       bool oldStickyInRenderedElements = false;
@@ -624,13 +626,13 @@ class FlutterListViewRender extends RenderSliver
   void _determineTailerStickyElement(BoxConstraints childConstraints) {
     final double scrollOffset = constraints.scrollOffset;
     final double cacheOrigin = constraints.cacheOrigin;
-    final double viewportHeight = constraints.viewportMainAxisExtent;
+    final double viewportExtent = constraints.viewportMainAxisExtent;
     _trackedNextStickyElement = null;
 
     /// The three condition indicate it is already reach header in multiple sliver
     if (cacheOrigin <= 0 &&
-        constraints.remainingPaintExtent >= viewportHeight &&
-        childManager.totalItemHeight > viewportHeight) {
+        constraints.remainingPaintExtent >= viewportExtent &&
+        childManager.totalItemHeight > viewportExtent) {
       FlutterListViewRenderData? fristOrLastElementInViewport;
 
       bool oldStickyInRenderedElements = false;
@@ -639,7 +641,7 @@ class FlutterListViewRender extends RenderSliver
         var item = childManager.renderedElements[i];
 
         if (fristOrLastElementInViewport == null &&
-            item.offset + item.height < scrollOffset + viewportHeight) {
+            item.offset + item.height < scrollOffset + viewportExtent) {
           fristOrLastElementInViewport = item;
         }
         if (item == childManager.stickyElement) {
@@ -877,7 +879,7 @@ class FlutterListViewRender extends RenderSliver
               lastPainItemInViewport = renderElement;
               lastPainItemOffsetY = renderElement.offset;
               lastPainItemHeight = _mainAxisExtent(child.size);
-          }
+            }
           }
 
           // remember last render height
@@ -909,7 +911,7 @@ class FlutterListViewRender extends RenderSliver
         constraints.viewportMainAxisExtent, paintElements);
 
     currentScrollOffset = constraints.scrollOffset;
-    currentViewportHeight = constraints.viewportMainAxisExtent;
+    currentViewportExtent = constraints.viewportMainAxisExtent;
   }
 
   void paintHeaderSticky(PaintingContext context, Offset offset,
