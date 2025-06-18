@@ -89,6 +89,8 @@ class FlutterListViewElement extends RenderObjectElement {
             newDelegate.shouldRebuild(oldDelegate))) {
       performRebuild();
       _itemHeights.clear();
+      cachedElements.clear();
+      permanentElements.clear();
     }
     _handleInitIndex(newDelegate, oldDelegate);
     markAsInvalid = true;
@@ -399,7 +401,7 @@ class FlutterListViewElement extends RenderObjectElement {
 
     if (widget.delegate is FlutterListViewDelegate) {
       var flutterListDelegate = widget.delegate as FlutterListViewDelegate;
-      var axis = renderObject.constraints.axis;
+      final axis = (renderObject.constraints as SliverConstraints).axis;
       if (axis == Axis.horizontal) {
         if (flutterListDelegate.onItemWidth != null) {
           return flutterListDelegate.onItemWidth!(index);
@@ -509,7 +511,7 @@ class FlutterListViewElement extends RenderObjectElement {
       var itemHeight = 50.0;
       if (widget.delegate is FlutterListViewDelegate) {
         var flutterListDelegate = widget.delegate as FlutterListViewDelegate;
-        var axis = renderObject.constraints.axis;
+        final axis = (renderObject.constraints as SliverConstraints).axis;
         if (axis == Axis.horizontal) {
           itemHeight = flutterListDelegate.preferItemWidth;
         } else {
@@ -629,9 +631,8 @@ class FlutterListViewElement extends RenderObjectElement {
         var item = _renderedElements[i];
         item.offset += diff;
         if (item.element.renderObject != null) {
-          final itemParentData =
-              item.element.renderObject!.parentData!
-                  as SliverMultiBoxAdaptorParentData;
+          final itemParentData = item.element.renderObject!.parentData!
+              as SliverMultiBoxAdaptorParentData;
           itemParentData.layoutOffset = item.offset;
         }
       }
@@ -652,9 +653,8 @@ class FlutterListViewElement extends RenderObjectElement {
     spEle.offset = offset;
     spEle.height = height;
     if (spEle.element.renderObject!.parentData != null) {
-      final parentData =
-          spEle.element.renderObject!.parentData!
-              as SliverMultiBoxAdaptorParentData;
+      final parentData = spEle.element.renderObject!.parentData!
+          as SliverMultiBoxAdaptorParentData;
       parentData.layoutOffset = spEle.offset;
     }
     setItemHeight(getKeyByItemIndex(spEle.index), height);

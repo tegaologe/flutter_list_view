@@ -97,7 +97,7 @@ class _StickyHeader2State extends State<StickyHeader2> {
               onPressed: () {
                 controller.sliverController.jumpToIndex(_countries.length - 1);
               },
-              child: Text("Scroll down"),
+              child: const Text("Scroll down"),
             ),
           ),
           Expanded(

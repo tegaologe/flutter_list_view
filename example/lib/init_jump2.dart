@@ -46,7 +46,7 @@ class TestApiWidget extends HookWidget {
         (final BuildContext _, final int index) {
           final item = dataList.value[index];
           return Container(
-            margin: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+            margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
             child: Text(item.toString()),
           );
         },

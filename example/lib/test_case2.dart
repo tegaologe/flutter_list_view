@@ -19,10 +19,10 @@ class _TestCase2State extends State<TestCase2> {
         delegate: FlutterListViewDelegate(
           (BuildContext context, int index) {
             return Container(
-              margin: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+              margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(8),
-                color: Color(0xFF333333),
+                color: const Color(0xFF333333),
               ),
               height: 100,
               child: Builder(
@@ -33,7 +33,7 @@ class _TestCase2State extends State<TestCase2> {
                         var box = context.findRenderObject() as RenderBox;
                         final Offset offset = box.localToGlobal(Offset.zero);
                         var size = box.size;
-                        print("---------------------------${offset}");
+                        print("---------------------------$offset");
                       } catch (e) {
                         print(e);
                       }
