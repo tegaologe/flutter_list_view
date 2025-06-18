@@ -18,6 +18,7 @@ import 'jump_to_index.dart';
 import 'list_view_performance.dart';
 import 'permanent_item.dart';
 import 'pull_to_refresh_list.dart';
+import 'horizontal_list.dart';
 import 'separatedList.dart';
 import 'sticky_header.dart';
 import 'sticky_header_refresh.dart';
@@ -65,6 +66,7 @@ class SectionViewRoute {
     "/dynamicContent": (context) => const DynamicContent(),
     "/test1": (context) => const Test1(),
     "/init_jump2": (context) => TestApiWidget(),
-    "/multiple_slivers": (context) => MultipleSlivers()
+    "/multiple_slivers": (context) => MultipleSlivers(),
+    "/horizontal_list": (context) => const HorizontalListExample(),
   };
 }
