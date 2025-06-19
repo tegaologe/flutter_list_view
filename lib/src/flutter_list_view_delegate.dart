@@ -5,7 +5,7 @@ typedef FlutterListViewDelegateOnItemSticky = bool Function(int index);
 typedef FlutterListViewDelegateOnItemHeight = double Function(int index);
 typedef FlutterListViewDelegateOnItemWidth = double Function(int index);
 
-enum FirstItemAlign { start, end }
+enum FirstItemAlign { start, end, middle }
 
 class FlutterListViewDelegate extends SliverChildDelegate {
   /// Creates a delegate that supplies children for slivers using the given
@@ -57,10 +57,11 @@ class FlutterListViewDelegate extends SliverChildDelegate {
   final double initOffset;
   final bool initOffsetBasedOnBottom;
 
-  /// When item is not enough fill one viewport. Where is the items shoule align to
-  /// For example: if reverse is false,
-  /// When [firstItemAlign]=FirstItemAlign.start, the item should located on top.
-  /// When [firstItemAlign]=FirstItemAlign.end, the item should located on bottom.
+  /// When item is not enough to fill one viewport, this determines where the
+  /// items should align. For example: if [reverse] is false,
+  /// * [FirstItemAlign.start] aligns items at the top.
+  /// * [FirstItemAlign.end] aligns items at the bottom.
+  /// * [FirstItemAlign.middle] centers items vertically.
   final FirstItemAlign firstItemAlign;
 
   /// [onItemKey] will indicate the item key

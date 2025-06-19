@@ -529,7 +529,8 @@ class FlutterListViewRender extends RenderSliver
 
   double _getScrollExtent() {
     var totalItemHeight = childManager.totalItemHeight;
-    if (childManager.firstItemAlign == FirstItemAlign.end) {
+    if (childManager.firstItemAlign == FirstItemAlign.end ||
+        childManager.firstItemAlign == FirstItemAlign.middle) {
       if (totalItemHeight < constraints.viewportMainAxisExtent) {
         return constraints.viewportMainAxisExtent;
       }
@@ -539,7 +540,8 @@ class FlutterListViewRender extends RenderSliver
   }
 
   double _getPaintExtent(double origPaintExtent) {
-    if (childManager.firstItemAlign == FirstItemAlign.end) {
+    if (childManager.firstItemAlign == FirstItemAlign.end ||
+        childManager.firstItemAlign == FirstItemAlign.middle) {
       var totalItemHeight = childManager.totalItemHeight;
       if (totalItemHeight < constraints.viewportMainAxisExtent) {
         var paintExtent = calculatePaintOffset(
@@ -555,7 +557,8 @@ class FlutterListViewRender extends RenderSliver
   }
 
   double _getCacheExtent(double origCacehExtent) {
-    if (childManager.firstItemAlign == FirstItemAlign.end) {
+    if (childManager.firstItemAlign == FirstItemAlign.end ||
+        childManager.firstItemAlign == FirstItemAlign.middle) {
       var totalItemHeight = childManager.totalItemHeight;
       if (totalItemHeight < constraints.viewportMainAxisExtent) {
         final double cacheExtent = calculateCacheOffset(
@@ -989,7 +992,8 @@ class FlutterListViewRender extends RenderSliver
         childManager.stickyElement!.element.renderObject == child) {
       return 0;
     } else {
-      if (childManager.firstItemAlign == FirstItemAlign.end) {
+      if (childManager.firstItemAlign == FirstItemAlign.end ||
+          childManager.firstItemAlign == FirstItemAlign.middle) {
         var actualScrollExtent = childManager.totalItemHeight;
         final axisDirection = applyGrowthDirectionToAxisDirection(
             constraints.axisDirection, constraints.growthDirection);
@@ -997,13 +1001,21 @@ class FlutterListViewRender extends RenderSliver
         if (actualScrollExtent < constraints.viewportMainAxisExtent) {
           if (axisDirection == AxisDirection.down) {
             var delta = childScrollOffset(child)! - constraints.scrollOffset;
-            delta =
-                delta + constraints.viewportMainAxisExtent - actualScrollExtent;
+            double adjust =
+                constraints.viewportMainAxisExtent - actualScrollExtent;
+            if (childManager.firstItemAlign == FirstItemAlign.middle) {
+              adjust = adjust / 2;
+            }
+            delta = delta + adjust;
             return delta;
           } else {
             var delta = childScrollOffset(child)! - constraints.scrollOffset;
-            delta =
-                delta + constraints.viewportMainAxisExtent - actualScrollExtent;
+            double adjust =
+                constraints.viewportMainAxisExtent - actualScrollExtent;
+            if (childManager.firstItemAlign == FirstItemAlign.middle) {
+              adjust = adjust / 2;
+            }
+            delta = delta + adjust;
 
             return delta;
           }
