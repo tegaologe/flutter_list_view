@@ -41,6 +41,19 @@ FlutterListView(
     childCount: data.length,
   ))
 ```
+To center a specific item when the list is taller than the viewport, provide
+`anchor: 0.5` and an `initIndex` on the delegate so that the selected item
+starts in the middle:
+```dart
+FlutterListView(
+  anchor: 0.5,
+  delegate: FlutterListViewDelegate(
+    (context, index) => ListTile(title: Text('Item $index')),
+    childCount: data.length,
+    initIndex: 0, // or any index you want centered
+  ),
+)
+```
 ### Jump to index
 ```dart
 flutterListViewController.jumpToIndex(100);

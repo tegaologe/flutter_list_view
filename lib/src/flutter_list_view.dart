@@ -7,6 +7,7 @@ import 'dart:math' as math;
 class FlutterListView extends CustomScrollView {
   final SliverChildDelegate delegate;
   final FlutterListViewController? _controller;
+  final double anchor;
 
   const FlutterListView({
     Key? key,
@@ -19,7 +20,7 @@ class FlutterListView extends CustomScrollView {
     ScrollBehavior? scrollBehavior,
     bool shrinkWrap = false,
     Key? center,
-    double anchor = 0.0,
+    this.anchor = 0.0,
     double? cacheExtent,
     int? semanticChildCount,
     DragStartBehavior dragStartBehavior = DragStartBehavior.start,
@@ -54,6 +55,7 @@ class FlutterListView extends CustomScrollView {
     bool? primary,
     ScrollPhysics? physics,
     bool shrinkWrap = false,
+    this.anchor = 0.0,
     // EdgeInsetsGeometry? padding,
     required IndexedWidgetBuilder itemBuilder,
     int? itemCount,
@@ -89,6 +91,7 @@ class FlutterListView extends CustomScrollView {
           dragStartBehavior: dragStartBehavior,
           keyboardDismissBehavior: keyboardDismissBehavior,
           restorationId: restorationId,
+          anchor: anchor,
           clipBehavior: clipBehavior,
         );
 
@@ -100,6 +103,7 @@ class FlutterListView extends CustomScrollView {
     bool? primary,
     ScrollPhysics? physics,
     bool shrinkWrap = false,
+    this.anchor = 0.0,
     // EdgeInsetsGeometry? padding,
     required IndexedWidgetBuilder itemBuilder,
     required IndexedWidgetBuilder separatorBuilder,
@@ -153,6 +157,7 @@ class FlutterListView extends CustomScrollView {
           dragStartBehavior: dragStartBehavior,
           keyboardDismissBehavior: keyboardDismissBehavior,
           restorationId: restorationId,
+          anchor: anchor,
           clipBehavior: clipBehavior,
         );
 
@@ -162,6 +167,7 @@ class FlutterListView extends CustomScrollView {
       FlutterSliverList(
         delegate: delegate,
         controller: _controller?.sliverController,
+        anchor: anchor,
       )
     ];
   }

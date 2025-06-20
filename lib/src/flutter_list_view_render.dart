@@ -8,9 +8,17 @@ class FlutterListViewRender extends RenderSliver
     with RenderSliverWithKeepAliveMixin, RenderSliverHelpers {
   FlutterListViewRender({
     required this.childManager,
-  });
+    double anchor = 0.0,
+  }) : _anchor = anchor;
 
   final FlutterListViewElement childManager;
+  double _anchor;
+  double get anchor => _anchor;
+  set anchor(double value) {
+    if (_anchor == value) return;
+    _anchor = value;
+    markNeedsLayout();
+  }
 
   /// Remember the first paint item in viewport
   /// We will use the data to keep position if some items
@@ -443,11 +451,14 @@ class FlutterListViewRender extends RenderSliver
           ? indexShoudBeJumpOffset * viewportExtent
           : indexShoudBeJumpOffset;
 
-      var scrollDy = itemDy - offsetPx;
-      _jumpDistanceFromTop = offsetPx;
+      var anchorOffset = anchor * viewportExtent;
+      var scrollDy = itemDy - offsetPx - anchorOffset;
+      _jumpDistanceFromTop = offsetPx + anchorOffset;
       if (offsetBasedOnBottom) {
-        scrollDy = itemDy - (viewportExtent - (offsetPx + itemHeight));
-        _jumpDistanceFromTop = viewportExtent - (offsetPx + itemHeight);
+        scrollDy =
+            itemDy - (viewportExtent - (offsetPx + itemHeight)) - anchorOffset;
+        _jumpDistanceFromTop =
+            viewportExtent - (offsetPx + itemHeight) + anchorOffset;
       }
 
       if (scrollDy < 0) scrollDy = 0;
