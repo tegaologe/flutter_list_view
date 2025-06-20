@@ -160,12 +160,6 @@ class FlutterListViewElement extends RenderObjectElement {
       index >= 0 && index < childCount,
       "Index should be >=0 and  < child count",
     );
-    if (firstItemAlign == FirstItemAlign.middle) {
-      var flutterListViewRender = renderObject as FlutterListViewRender;
-      var viewportExtent = flutterListViewRender.currentViewportExtent ?? 0;
-      var itemHeight = getItemHeight(getKeyByItemIndex(index), index);
-      offset += viewportExtent / 2 - itemHeight / 2;
-    }
     indexShoudBeJumpTo = index;
     indexShoudBeJumpOffset = offset;
     offsetBasedOnBottom = basedOnBottom;
