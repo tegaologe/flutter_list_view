@@ -160,6 +160,12 @@ class FlutterListViewElement extends RenderObjectElement {
       index >= 0 && index < childCount,
       "Index should be >=0 and  < child count",
     );
+    if (firstItemAlign == FirstItemAlign.middle) {
+      var flutterListViewRender = renderObject as FlutterListViewRender;
+      var viewportExtent = flutterListViewRender.currentViewportExtent ?? 0;
+      var itemHeight = getItemHeight(getKeyByItemIndex(index), index);
+      offset += viewportExtent / 2 - itemHeight / 2;
+    }
     indexShoudBeJumpTo = index;
     indexShoudBeJumpOffset = offset;
     offsetBasedOnBottom = basedOnBottom;
@@ -183,6 +189,11 @@ class FlutterListViewElement extends RenderObjectElement {
     var flutterListViewRender = renderObject as FlutterListViewRender;
     var viewportExtent = flutterListViewRender.currentViewportExtent ?? 0;
     var offsetPx = offset.abs() <= 1.0 ? offset * viewportExtent : offset;
+
+    if (firstItemAlign == FirstItemAlign.middle) {
+      var itemHeight = getItemHeight(getKeyByItemIndex(index), index);
+      offsetPx += viewportExtent / 2 - itemHeight / 2;
+    }
 
     if (basedOnBottom) {
       var itemHeight = getItemHeight(getKeyByItemIndex(index), index);
