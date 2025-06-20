@@ -41,6 +41,27 @@ FlutterListView(
     childCount: data.length,
   ))
 ```
+To center the first item when the list is taller than the viewport, provide
+`anchor: 0.5`:
+```dart
+FlutterListView(
+  anchor: 0.5,
+  delegate: FlutterListViewDelegate(
+    (context, index) => ListTile(title: Text('Item $index')),
+    childCount: data.length,
+  ),
+)
+```
+You can also specify which item starts at the anchor using `initIndex`. The
+builder constructors default the initial offset to the provided `anchor`:
+```dart
+FlutterListView.builder(
+  anchor: 0.5,
+  initIndex: 10,
+  itemBuilder: (context, index) => ListTile(title: Text('Item $index')),
+  itemCount: data.length,
+)
+```
 ### Jump to index
 ```dart
 flutterListViewController.jumpToIndex(100);

@@ -54,6 +54,11 @@ class FlutterListView extends CustomScrollView {
     bool? primary,
     ScrollPhysics? physics,
     bool shrinkWrap = false,
+    double anchor = 0.0,
+    int initIndex = 0,
+    double? initOffset,
+    bool initOffsetBasedOnBottom = false,
+    FirstItemAlign firstItemAlign = FirstItemAlign.start,
     // EdgeInsetsGeometry? padding,
     required IndexedWidgetBuilder itemBuilder,
     int? itemCount,
@@ -68,12 +73,16 @@ class FlutterListView extends CustomScrollView {
     String? restorationId,
     Clip clipBehavior = Clip.hardEdge,
   })  : _controller = controller,
-        delegate = SliverChildBuilderDelegate(
+        delegate = FlutterListViewDelegate(
           itemBuilder,
           childCount: itemCount,
           addAutomaticKeepAlives: addAutomaticKeepAlives,
           addRepaintBoundaries: addRepaintBoundaries,
           addSemanticIndexes: addSemanticIndexes,
+          initIndex: initIndex,
+          initOffset: initOffset ?? anchor,
+          initOffsetBasedOnBottom: initOffsetBasedOnBottom,
+          firstItemAlign: firstItemAlign,
         ),
         super(
           key: key,
@@ -89,6 +98,7 @@ class FlutterListView extends CustomScrollView {
           dragStartBehavior: dragStartBehavior,
           keyboardDismissBehavior: keyboardDismissBehavior,
           restorationId: restorationId,
+          anchor: anchor,
           clipBehavior: clipBehavior,
         );
 
@@ -100,6 +110,11 @@ class FlutterListView extends CustomScrollView {
     bool? primary,
     ScrollPhysics? physics,
     bool shrinkWrap = false,
+    double anchor = 0.0,
+    int initIndex = 0,
+    double? initOffset,
+    bool initOffsetBasedOnBottom = false,
+    FirstItemAlign firstItemAlign = FirstItemAlign.start,
     // EdgeInsetsGeometry? padding,
     required IndexedWidgetBuilder itemBuilder,
     required IndexedWidgetBuilder separatorBuilder,
@@ -114,7 +129,7 @@ class FlutterListView extends CustomScrollView {
     String? restorationId,
     Clip clipBehavior = Clip.hardEdge,
   })  : _controller = controller,
-        delegate = SliverChildBuilderDelegate(
+        delegate = FlutterListViewDelegate(
           (BuildContext context, int index) {
             final int itemIndex = index ~/ 2;
             final Widget widget;
@@ -138,6 +153,10 @@ class FlutterListView extends CustomScrollView {
           semanticIndexCallback: (Widget _, int index) {
             return index.isEven ? index ~/ 2 : null;
           },
+          initIndex: initIndex,
+          initOffset: initOffset ?? anchor,
+          initOffsetBasedOnBottom: initOffsetBasedOnBottom,
+          firstItemAlign: firstItemAlign,
         ),
         super(
           key: key,
@@ -153,6 +172,7 @@ class FlutterListView extends CustomScrollView {
           dragStartBehavior: dragStartBehavior,
           keyboardDismissBehavior: keyboardDismissBehavior,
           restorationId: restorationId,
+          anchor: anchor,
           clipBehavior: clipBehavior,
         );
 
