@@ -12,6 +12,7 @@ Enhance list view to support scroll to index, jump to index, header sticky, enab
 6. When initializing data, allow for scrolling to specify an index.
 7. To save performance, flutter list_view always reuses the rendered item.
 8. Support to keep specifying items without reusing and disposing of them once the item is created.
+9. When `firstItemAlign` is set to `FirstItemAlign.middle`, jumping or initializing to an index keeps the target item centered in the viewport.
 
 > [!NOTE]  
 > The list item will be reuse when disableCacheItems=false and the invisible item will destroy. This mean, one item may be create or destroy multiple times. So The Item widget must not have any state, as it may lead to unforeseeable issues. If you want work same with list_view which item didn't destroy after create, please put onIsPermanent: (keyOrIndex) => true to FlutterListViewDelegate

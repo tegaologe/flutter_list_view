@@ -443,6 +443,10 @@ class FlutterListViewRender extends RenderSliver
           ? indexShoudBeJumpOffset * viewportExtent
           : indexShoudBeJumpOffset;
 
+      if (childManager.firstItemAlign == FirstItemAlign.middle) {
+        offsetPx += viewportExtent / 2 - itemHeight / 2;
+      }
+
       var scrollDy = itemDy - offsetPx;
       _jumpDistanceFromTop = offsetPx;
       if (offsetBasedOnBottom) {
