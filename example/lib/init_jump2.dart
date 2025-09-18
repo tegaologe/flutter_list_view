@@ -3,7 +3,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_list_view/flutter_list_view.dart';
 
 class TestApiWidget extends HookWidget {
-  TestApiWidget({super.key});
+  const TestApiWidget({super.key});
 
   @override
   Widget build(final BuildContext context) {
