@@ -66,7 +66,7 @@ class SectionViewRoute {
     "/dynamicContent": (context) => const DynamicContent(),
     "/test1": (context) => const Test1(),
     "/init_jump2": (context) => TestApiWidget(),
-    "/multiple_slivers": (context) => MultipleSlivers(),
+    "/multiple_slivers": (context) => const MultipleSlivers(),
     "/horizontal_list": (context) => const HorizontalListExample(),
   };
 }

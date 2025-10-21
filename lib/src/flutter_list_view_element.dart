@@ -184,6 +184,11 @@ class FlutterListViewElement extends RenderObjectElement {
     var viewportExtent = flutterListViewRender.currentViewportExtent ?? 0;
     var offsetPx = offset.abs() <= 1.0 ? offset * viewportExtent : offset;
 
+    if (firstItemAlign == FirstItemAlign.middle) {
+      var itemHeight = getItemHeight(getKeyByItemIndex(index), index);
+      offsetPx += viewportExtent / 2 - itemHeight / 2;
+    }
+
     if (basedOnBottom) {
       var itemHeight = getItemHeight(getKeyByItemIndex(index), index);
 

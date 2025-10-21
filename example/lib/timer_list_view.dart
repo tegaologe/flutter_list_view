@@ -18,7 +18,7 @@ class _TimerListViewState extends State<TimerListView> {
         body: FlutterListView(
             delegate: FlutterListViewDelegate(
       (BuildContext context, int index) {
-        return Padding(padding: const EdgeInsets.all(10.0), child: TimerCell());
+        return const Padding(padding: EdgeInsets.all(10.0), child: TimerCell());
       },
       childCount: items.length,
       // disableCacheItems: true,
